@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 const App = () => {
     const [todo, setTodo] = useState([]);
@@ -9,7 +9,6 @@ const App = () => {
             .then((response) => {
                 const todo = response?.data;
                 setTodo(todo);
-                console.log("response", response, response?.data)
             })
     }, []);
 
@@ -25,4 +24,4 @@ const App = () => {
     )
 }
 
-export default App
+export default App;
