@@ -1,4 +1,3 @@
+import { handlers as productHandlers } from './productHandlers';
 
-import { handlers as todosHandlers } from './todos'
-
-export const handlers = [...todosHandlers];
+export const handlers = [...productHandlers];
