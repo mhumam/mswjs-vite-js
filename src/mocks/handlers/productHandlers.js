@@ -1,9 +1,11 @@
 // import { http, HttpResponse, bypass } from 'msw';
 import { http, HttpResponse } from 'msw';
-import response from './data/product-success.json';
+import productList from './data/product-list-success.json';
+import productDelete from './data/product-delete-success.json';
 
 export const handlers = [
-    http.get('https://dummyjson.com/products', () => HttpResponse.json(response))
+    http.get('https://dummyjson.com/products', () => HttpResponse.json(productList)),
+    http.delete('https://dummyjson.com/products/:id', () => HttpResponse.json(productDelete))
     // http.get('https://dummyjson.com/products', () => new HttpResponse(null, { status: 404 }))
     // http.get('https://dummyjson.com/products', () => HttpResponse.json({}, { status: 404 }))
     // http.get('https://dummyjson.com/products', () => HttpResponse.error())

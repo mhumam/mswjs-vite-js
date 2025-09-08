@@ -12,6 +12,10 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Link from '@mui/material/Link';
 import axios from 'axios';
 
 const badgeColorStatus = {
@@ -26,6 +30,8 @@ export default function BasicTable() {
 	const [totalPage, setTotalPage] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [isOpen, setIsOpen] = useState(false);
+	const [notificationMessage, setNotificationMessage] = useState(null);
 
 	const itemsPerPage = 10;
 
@@ -58,6 +64,14 @@ export default function BasicTable() {
 		setCurrentPage(value);
 	};
 
+	const handleDelete = async (id) => {
+		const response = await axios.delete(`https://dummyjson.com/products/${id}`);
+		await setNotificationMessage(response?.data?.data?.message)
+		await setIsOpen(true);
+	}
+
+	const handleClose = () => setIsOpen(false);
+
 	if (loading) {
 		return (
 			<Container>
@@ -80,6 +94,16 @@ export default function BasicTable() {
 
 	return (
 		<Container>
+			<Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+				<Alert
+					onClose={handleClose}
+					severity="success"
+					variant="filled"
+					sx={{ width: '100%' }}
+				>
+					{notificationMessage}
+				</Alert>
+			</Snackbar>
 			<div style={{ margin: '20px 0' }}>
 				<Typography variant="h4" component="h4">Product List</Typography>
 				<Typography variant="subtitle1" color="textSecondary">
@@ -97,6 +121,7 @@ export default function BasicTable() {
 							<TableCell>Availability Status</TableCell>
 							<TableCell>Category</TableCell>
 							<TableCell>Price</TableCell>
+							<TableCell>Action</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -106,7 +131,11 @@ export default function BasicTable() {
 								return (
 									<TableRow key={row.id || key} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 										<TableCell component="th" scope="row">{number}</TableCell>
-										<TableCell component="th" scope="row">{row?.sku}</TableCell>
+										<TableCell component="th" scope="row">
+											<Link href="#" underline="none">
+												{row?.sku}
+											</Link>
+										</TableCell>
 										<TableCell component="th" scope="row">{row?.title}</TableCell>
 										<TableCell component="th" scope="row">
 											<Chip
@@ -116,6 +145,10 @@ export default function BasicTable() {
 										</TableCell>
 										<TableCell component="th" scope="row">{row?.category}</TableCell>
 										<TableCell component="th" scope="row">${row?.price}</TableCell>
+										<TableCell>
+											<Button variant="outlined" color='error' size='small' onClick={() => handleDelete(row?.id)}>Delete</Button>
+										</TableCell>
+
 									</TableRow>
 								)
 							})
