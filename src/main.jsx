@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from "react-router";
 import './index.css'
 import App from './App.jsx'
+
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {
@@ -17,8 +19,8 @@ async function enableMocking() {
 
 enableMocking().then(() => {
   createRoot(document.getElementById('root')).render(
-    <>
+    <BrowserRouter>
       <App />
-    </>,
+    </BrowserRouter>
   )
 })

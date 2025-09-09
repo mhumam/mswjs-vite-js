@@ -1,173 +1,179 @@
-import { useEffect, useState } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Container from '@mui/material/Container';
-import Pagination from '@mui/material/Pagination';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import Link from '@mui/material/Link';
-import axios from 'axios';
+import React, { useState } from 'react';
+import Header from './components/Headers';
+import { Routes, Route } from "react-router";
+import { NavLink } from "react-router";
+import PathParameters from './page/http-mocking/intercept-request/path-parameters';
+import QueryParameters from './page/http-mocking/intercept-request/query-parameters';
+import ErrorResponse from './page/http-mocking/intercept-response/error-response';
+import NetworkErrors from './page/http-mocking/intercept-response/network-errors';
+import Cookies from './page/http-mocking/intercept-response/cookies';
+import Polling from './page/http-mocking/intercept-response/polling';
+import ResponseTiming from './page/http-mocking/intercept-response/response-timing';
+import ResponsePatching from './page/http-mocking/intercept-response/response-patching';
 
-const badgeColorStatus = {
-	'Out of Stock': 'error',
-	'Low Stock': 'warning',
-	'In Stock': 'success'
-}
+const App = () => {
+	const [expandedSections, setExpandedSections] = useState({
+		'http-mocking': true,
+		'intercept-request': true,
+		'mocking-response': true,
+		'graphql-mocking': true
+	});
 
-export default function BasicTable() {
-	const [dataList, setDataList] = useState([]);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPage, setTotalPage] = useState(0);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const [isOpen, setIsOpen] = useState(false);
-	const [notificationMessage, setNotificationMessage] = useState(null);
-
-	const itemsPerPage = 10;
-
-	const fetchProducts = async (page) => {
-		setLoading(true);
-		setError(null);
-
-		try {
-			const skip = (page - 1) * itemsPerPage;
-			const response = await axios.get(`https://dummyjson.com/products?limit=${itemsPerPage}&skip=${skip}`);
-
-			const data = response?.data?.products;
-			const total = response?.data?.total;
-
-			setDataList(data);
-			setTotalPage(Math.ceil(total / itemsPerPage));
-		} catch (err) {
-			setError('Failed to fetch products');
-			console.error('Error fetching products:', err);
-		} finally {
-			setLoading(false);
-		}
+	const toggleSection = (sectionKey) => {
+		setExpandedSections(prev => ({
+			...prev,
+			[sectionKey]: !prev[sectionKey]
+		}));
 	};
-
-	useEffect(() => {
-		fetchProducts(currentPage);
-	}, [currentPage]);
-
-	const handlePageChange = (_, value) => {
-		setCurrentPage(value);
-	};
-
-	const handleDelete = async (id) => {
-		const response = await axios.delete(`https://dummyjson.com/products/${id}`);
-		await setNotificationMessage(response?.data?.data?.message)
-		await setIsOpen(true);
-	}
-
-	const handleClose = () => setIsOpen(false);
-
-	if (loading) {
-		return (
-			<Container>
-				<Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-					<CircularProgress />
-				</Box>
-			</Container>
-		);
-	}
-
-	if (error) {
-		return (
-			<Container>
-				<Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-					<Typography color="error">{error}</Typography>
-				</Box>
-			</Container>
-		);
-	}
 
 	return (
-		<Container>
-			<Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-				<Alert
-					onClose={handleClose}
-					severity="success"
-					variant="filled"
-					sx={{ width: '100%' }}
-				>
-					{notificationMessage}
-				</Alert>
-			</Snackbar>
-			<div style={{ margin: '20px 0' }}>
-				<Typography variant="h4" component="h4">Product List</Typography>
-				<Typography variant="subtitle1" color="textSecondary">
-					Page {currentPage} of {totalPage}
-				</Typography>
-			</div>
+		<div>
+			<Header />
+			<div className="container">
+				<div className="main-content">
+					<aside className="sidebar">
+						<div className="menu-section">
+							<div
+								className="menu-title"
+								onClick={() => toggleSection('http-mocking')}
+								style={{ cursor: 'pointer' }}
+							>
+								<span className="menu-icon">
+									{expandedSections['http-mocking'] ? '▼' : '▶'}
+								</span>
+								HTTP Mocking
+							</div>
+							{expandedSections['http-mocking'] && (
+								<div className="submenu">
+									<div
+										className="submenu-title"
+										onClick={() => toggleSection('intercept-request')}
+										style={{ cursor: 'pointer' }}
+									>
+										<span className="menu-icon">
+											{expandedSections['intercept-request'] ? '▼' : '▶'}
+										</span>
+										Intercept Request
+									</div>
+									{expandedSections['intercept-request'] && (
+										<div className="sub-submenu">
+											<NavLink to="/path-parameters" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="path-parameters">
+														Path Parameters
+													</div>
+												)}
+											</NavLink>
+											<NavLink to="/query-parameters" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="query-parameters">
+														Query Parameters
+													</div>
+												)}
+											</NavLink>
+											{/* <div className="menu-item" data-section="request-body">Request Body</div>
+											<div className="menu-item" data-section="request-cookie">Request Cookie</div> */}
+										</div>
+									)}
 
-			<TableContainer component={Paper}>
-				<Table sx={{ minWidth: 650 }} aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							<TableCell>No</TableCell>
-							<TableCell>SKU</TableCell>
-							<TableCell>Title</TableCell>
-							<TableCell>Availability Status</TableCell>
-							<TableCell>Category</TableCell>
-							<TableCell>Price</TableCell>
-							<TableCell>Action</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{
-							dataList?.map((row, key) => {
-								const number = ((currentPage - 1) * itemsPerPage) + key + 1;
-								return (
-									<TableRow key={row.id || key} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-										<TableCell component="th" scope="row">{number}</TableCell>
-										<TableCell component="th" scope="row">
-											<Link href="#" underline="none">
-												{row?.sku}
-											</Link>
-										</TableCell>
-										<TableCell component="th" scope="row">{row?.title}</TableCell>
-										<TableCell component="th" scope="row">
-											<Chip
-												label={row?.availabilityStatus}
-												color={badgeColorStatus?.[row?.availabilityStatus] ?? 'default'}
-											/>
-										</TableCell>
-										<TableCell component="th" scope="row">{row?.category}</TableCell>
-										<TableCell component="th" scope="row">${row?.price}</TableCell>
-										<TableCell>
-											<Button variant="outlined" color='error' size='small' onClick={() => handleDelete(row?.id)}>Delete</Button>
-										</TableCell>
+									<div
+										className="submenu-title"
+										onClick={() => toggleSection('mocking-response')}
+										style={{ cursor: 'pointer' }}
+									>
+										<span className="menu-icon">
+											{expandedSections['mocking-response'] ? '▼' : '▶'}
+										</span>
+										Mocking Response
+									</div>
+									{expandedSections['mocking-response'] && (
+										<div className="sub-submenu">
+											<NavLink to="/error-response" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="error-response">
+														Error Response
+													</div>
+												)}
+											</NavLink>
+											<NavLink to="/network-errors" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="network-errors">
+														Network Errors
+													</div>
+												)}
+											</NavLink>
+											<NavLink to="/cookies" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="cookies">
+														Cookies
+													</div>
+												)}
+											</NavLink>
+											<NavLink to="/polling" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="polling">
+														Polling
+													</div>
+												)}
+											</NavLink>
+											<NavLink to="/response-timing" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="response-timing">
+														Response Timing
+													</div>
+												)}
+											</NavLink>
+											<NavLink to="/response-patching" style={{ textDecoration: 'none' }}>
+												{({ isActive }) => (
+													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="response-patching">
+														Response Patching
+													</div>
+												)}
+											</NavLink>
+										</div>
+									)}
+								</div>
+							)}
+						</div>
 
-									</TableRow>
-								)
-							})
-						}
-					</TableBody>
-				</Table>
-			</TableContainer>
+						<div className="menu-section">
+							<div
+								className="menu-title"
+								onClick={() => toggleSection('graphql-mocking')}
+								style={{ cursor: 'pointer' }}
+							>
+								<span className="menu-icon">
+									{expandedSections['graphql-mocking'] ? '▼' : '▶'}
+								</span>
+								GraphQL Mocking
+							</div>
+							{expandedSections['graphql-mocking'] && (
+								<div className="submenu">
+									<div className="menu-item" data-section="intercept-operations">Intercept Operations</div>
+									<div className="menu-item" data-section="graphql-response">Mocking Response</div>
+								</div>
+							)}
+						</div>
+					</aside>
 
-			{totalPage > 1 && (
-				<div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
-					<Pagination
-						count={totalPage}
-						page={currentPage}
-						color="primary"
-						shape="rounded"
-						onChange={handlePageChange}
-					/>
+
+					<main className="content-area">
+						<Routes>
+							<Route path="/" element={<PathParameters />} />
+							<Route path="/path-parameters" element={<PathParameters />} />
+							<Route path="/query-parameters" element={<QueryParameters />} />
+							<Route path="/error-response" element={<ErrorResponse />} />
+							<Route path="/network-errors" element={<NetworkErrors />} />
+							<Route path="/cookies" element={<Cookies />} />
+							<Route path="/polling" element={<Polling />} />
+							<Route path="/response-timing" element={<ResponseTiming />} />
+							<Route path="/response-patching" element={<ResponsePatching />} />
+						</Routes>
+					</main>
 				</div>
-			)}
-		</Container>
-	);
+			</div>
+		</div>
+	)
 }
+
+export default App

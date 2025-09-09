@@ -1,9 +1,27 @@
 // import { http, HttpResponse, bypass } from 'msw';
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, passthrough } from 'msw';
 import productList from './data/product-list-success.json';
 import productDelete from './data/product-delete-success.json';
 
 export const handlers = [
+    http.get('https://dummyjson.com/products/:id', ({ params }) => {
+        const { id } = params;
+
+        if (id === '0') {
+            return new HttpResponse(null, { status: 404 });
+        }
+        return passthrough();
+    }),
+    http.get('https://dummyjson.com/products', ({ request }) => {
+        const url = new URL(request.url);
+        const q = url.searchParams.get('q');
+
+        if (q === '0') {
+            return new HttpResponse(null, { status: 404 })
+        }
+
+        return passthrough();
+    }),
     http.get('https://dummyjson.com/products', () => HttpResponse.json(productList)),
     http.delete('https://dummyjson.com/products/:id', () => HttpResponse.json(productDelete))
     // http.get('https://dummyjson.com/products', () => new HttpResponse(null, { status: 404 }))
