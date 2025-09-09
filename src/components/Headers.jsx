@@ -7,12 +7,12 @@ const App = () => {
             <div className="container">
                 <div className="header-content">
                     <div className="logo">MSW Demo</div>
-                    <div className="msw-toggle">
+                    {/* <div className="msw-toggle">
                         <div className="toggle-switch" id="mswToggle">
                             <div className="toggle-slider"></div>
                         </div>
                         <div className="toggle-label" id="toggleLabel">MSW Aktif</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </header>
