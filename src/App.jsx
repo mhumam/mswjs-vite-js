@@ -6,8 +6,8 @@ import PathParameters from './page/http-mocking/intercept-request/path-parameter
 import QueryParameters from './page/http-mocking/intercept-request/query-parameters';
 import ErrorResponse from './page/http-mocking/intercept-response/error-response';
 import NetworkErrors from './page/http-mocking/intercept-response/network-errors';
-import Cookies from './page/http-mocking/intercept-response/cookies';
-import Polling from './page/http-mocking/intercept-response/polling';
+// import Cookies from './page/http-mocking/intercept-response/cookies';
+// import Polling from './page/http-mocking/intercept-response/polling';
 import ResponseTiming from './page/http-mocking/intercept-response/response-timing';
 import ResponsePatching from './page/http-mocking/intercept-response/response-patching';
 
@@ -102,7 +102,7 @@ const App = () => {
 													</div>
 												)}
 											</NavLink>
-											<NavLink to="/cookies" style={{ textDecoration: 'none' }}>
+											{/* <NavLink to="/cookies" style={{ textDecoration: 'none' }}>
 												{({ isActive }) => (
 													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="cookies">
 														Cookies
@@ -115,7 +115,7 @@ const App = () => {
 														Polling
 													</div>
 												)}
-											</NavLink>
+											</NavLink> */}
 											<NavLink to="/response-timing" style={{ textDecoration: 'none' }}>
 												{({ isActive }) => (
 													<div className={`menu-item ${isActive ? "active" : ""}`} data-section="response-timing">
@@ -136,7 +136,7 @@ const App = () => {
 							)}
 						</div>
 
-						<div className="menu-section">
+						{/* <div className="menu-section">
 							<div
 								className="menu-title"
 								onClick={() => toggleSection('graphql-mocking')}
@@ -153,7 +153,7 @@ const App = () => {
 									<div className="menu-item" data-section="graphql-response">Mocking Response</div>
 								</div>
 							)}
-						</div>
+						</div> */}
 					</aside>
 
 
@@ -164,8 +164,8 @@ const App = () => {
 							<Route path="/query-parameters" element={<QueryParameters />} />
 							<Route path="/error-response" element={<ErrorResponse />} />
 							<Route path="/network-errors" element={<NetworkErrors />} />
-							<Route path="/cookies" element={<Cookies />} />
-							<Route path="/polling" element={<Polling />} />
+							{/* <Route path="/cookies" element={<Cookies />} />
+							<Route path="/polling" element={<Polling />} /> */}
 							<Route path="/response-timing" element={<ResponseTiming />} />
 							<Route path="/response-patching" element={<ResponsePatching />} />
 						</Routes>

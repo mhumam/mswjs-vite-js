@@ -1,8 +1,12 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 import ReactJson from 'react-json-view';
+import Input from 'antd/es/input/Input';
+import Form from 'antd/es/form/Form';
+import Card from 'antd/es/card/Card';
 
 const App = () => {
+    const [form] = Form.useForm();
     const [input, setInput] = useState('');
     const [request, setRequest] = useState({});
     const [result, setResult] = useState({});
@@ -60,16 +64,13 @@ export const handlers = [
                     </div>
                 </div>
 
-                <div>
-                    <input
-                        name="id"
-                        placeholder="Product ID"
-                        value={input}
-                        onChange={handleInputChange}
-                        type="number"
-                        min="0"
-                    />
-                </div>
+                <Card title="Custom Value Params" variant="outlined">
+                    <Form layout={'vertical'} form={form} initialValues={{ layout: 'vertical' }}>
+                        <Form.Item label="Search">
+                            <Input placeholder="input Search" onChange={handleInputChange} value={input} />
+                        </Form.Item>
+                    </Form>
+                </Card>
                 <div className="action-buttons">
                     <button
                         className="btn btn-primary"
